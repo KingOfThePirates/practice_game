@@ -1,6 +1,7 @@
 extern crate practice_game;
 
-use practice_game::Unit::{Unit, Hero, NonHero};
+use practice_game::unit::{Unit, Hero, NonHero};
+
 use std::mem;
 
 
@@ -14,21 +15,10 @@ const NONHERO_INIT_ATTACK: f64 = 10.0;
 
 
 // ======================================================================
-// New types
-//
-type Health = f64;
-type Attack = f64;
-type Level = u8;
-type Experience = f64;
-// ======================================================================
-
-
-
-// ======================================================================
 // Abstractions
 //
 #[derive(Clone)]
-struct Resources {
+pub struct Resources {
     player: Hero,
     enemy: NonHero,
 }
@@ -86,6 +76,34 @@ fn main() {
 // ======================================================================
 // Helper Routines
 //
+// UI
+pub fn draw_line_break() {
+    println!("");
+}
+
+pub fn draw_hp_bars(in_game_data: &Resources) {
+    let ref enemy = in_game_data.enemy;
+    let ref player = in_game_data.player;
+
+    println!("--------------------");
+    println!("enemy: {}", enemy.show());
+    println!("player: {}", player.show());
+    println!("--------------------");
+}
+
+pub fn draw_combat_text(in_game_data: &Resources) {
+    let ref enemy = in_game_data.enemy;
+    let ref player = in_game_data.player;
+
+    let old_health: f64 = enemy.realize_hp() + player.realize_atk();
+    let new_health: f64 = enemy.realize_hp();
+    let damage: f64 = player.realize_atk();
+    print!("{}hp -> ", old_health as i32);
+    print!("{}hp ", new_health as i32);
+    println!("{}!", damage as i32);
+}
+
+// Memory
 #[allow(dead_code)]
 fn show_mem(in_game_data: &Resources) {
     let ref enemy = in_game_data.realize_enemy();
@@ -102,10 +120,6 @@ fn show_mem(in_game_data: &Resources) {
     println!("player.atk: {}", mem::size_of_val(&player.realize_atk()));
     println!("player.lvl: {}", mem::size_of_val(&player.realize_lvl()));
     println!("player.exp: {}", mem::size_of_val(&player.realize_exp()));
-}
-
-fn draw_line_break() {
-    println!("");
 }
 
 fn battle(in_game_data: &mut Resources) {
@@ -130,27 +144,5 @@ fn deal_damage(in_game_data: &mut Resources) {
 
     let dmg = -player.realize_atk();
     enemy.change_current_hp(dmg);
-}
-
-fn draw_hp_bars(in_game_data: &Resources) {
-    let ref enemy = in_game_data.enemy;
-    let ref player = in_game_data.player;
-
-    println!("--------------------");
-    println!("enemy: {}", enemy.show());
-    println!("player: {}", player.show());
-    println!("--------------------");
-}
-
-fn draw_combat_text(in_game_data: &Resources) {
-    let ref enemy = in_game_data.enemy;
-    let ref player = in_game_data.player;
-
-    let old_health: f64 = enemy.realize_hp() + player.realize_atk();
-    let new_health: f64 = enemy.realize_hp();
-    let damage: f64 = player.realize_atk();
-    print!("{}hp -> ", old_health as i32);
-    print!("{}hp ", new_health as i32);
-    println!("{}!", damage as i32);
 }
 // ======================================================================
