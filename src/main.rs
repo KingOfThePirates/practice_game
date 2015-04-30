@@ -1,5 +1,11 @@
 extern crate practice_game;
 
+// Files
+use std::error::Error;
+use std::fs::File;
+use std::io::prelude::*;
+use std::path::Path;
+
 // Game Objects
 use practice_game::unit::{Unit, Hero, NonHero};
 
@@ -50,10 +56,25 @@ impl Resources {
 // ======================================================================
 //
 fn main() {
+    let database_path = Path::new("database.txt");
+    let database_display = database_path.display();
+    let mut database_file = match File::open(&database_path) {
+        Err(why) => panic!("couldn't open {file}: {reason}",
+                           file = database_display,
+                           reason = Error::description(&why)),
+        Ok(database_file) => database_file, };
+    let mut database_reader = String::new();
+    match database_file.read_to_string(&mut database_reader) {
+        Err(why) => panic!("couldn't read {file}: {reason}",
+                           file = database_display,
+                           reason = Error::description(&why)),
+        Ok(_) => print!("{file} contains:\n{variable}",
+                        file = database_display,
+                        variable = database_reader), }
+
     let mut game_data: Resources = Resources {
         player: Hero::new(HERO_INIT_HEALTH, HERO_INIT_ATTACK),
-        enemy: NonHero::new(NONHERO_INIT_HEALTH, NONHERO_INIT_ATTACK),
-    };
+        enemy: NonHero::new(NONHERO_INIT_HEALTH, NONHERO_INIT_ATTACK), };
     println!("Welcome to {}!", GAME_NAME);
     draw_line_break();
     draw_line_break();
