@@ -1,7 +1,9 @@
 extern crate practice_game;
 
+// Game Objects
 use practice_game::unit::{Unit, Hero, NonHero};
 
+// Tests
 use std::mem;
 
 
@@ -77,6 +79,7 @@ fn main() {
 // Helper Routines
 //
 // UI
+//
 pub fn draw_line_break() {
     println!("");
 }
@@ -104,6 +107,7 @@ pub fn draw_combat_text(in_game_data: &Resources) {
 }
 
 // Memory
+//
 #[allow(dead_code)]
 fn show_mem(in_game_data: &Resources) {
     let ref enemy = in_game_data.realize_enemy();
@@ -122,6 +126,8 @@ fn show_mem(in_game_data: &Resources) {
     println!("player.exp: {}", mem::size_of_val(&player.realize_exp()));
 }
 
+// Misc
+//
 fn battle(in_game_data: &mut Resources) {
     let mut game_data: &mut Resources = in_game_data;
     draw_hp_bars(&game_data);
