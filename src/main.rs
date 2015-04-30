@@ -1,8 +1,15 @@
+extern crate practice_game;
+
+use practice_game::Unit::{Unit, Hero, NonHero};
 use std::mem;
 
 
 
 const GAME_NAME: &'static str = "Fighter";
+const HERO_INIT_HEALTH: f64 = 200.0;
+const HERO_INIT_ATTACK: f64 = 20.0;
+const NONHERO_INIT_HEALTH: f64 = 100.0;
+const NONHERO_INIT_ATTACK: f64 = 10.0;
 
 
 
@@ -22,97 +29,19 @@ type Experience = f64;
 //
 #[derive(Clone)]
 struct Resources {
-    player: Box<Hero>,
-    enemy: Box<Unit>,
+    player: Hero,
+    enemy: NonHero,
 }
 
 impl Resources {
-    pub fn realize_player(&self) -> Box<Hero> {
+    pub fn realize_player(&self) -> Hero {
         let cloned_self = self.clone();
         cloned_self.player
     }
 
-    pub fn realize_enemy(&self) -> Box<Unit> {
+    pub fn realize_enemy(&self) -> NonHero {
         let cloned_self = self.clone();
         cloned_self.enemy
-    }
-}
-
-#[derive(Clone)]
-struct Unit {
-    hp: Health,
-    atk: Attack,
-}
-
-impl Unit {
-    fn new() -> Box<Unit> {
-        Box::new(Unit {
-            hp: 100.0,
-            atk: 10.0,
-        })
-    }
-
-    pub fn show(&self) -> String {
-        format!("{}hp {}atk",
-                self.realize_hp() as i32,
-                self.realize_atk() as i32)
-    }
-
-    pub fn change_current_hp(&mut self, amount: f64) {
-        self.hp += amount;
-    }
-
-    pub fn realize_hp(&self) -> f64 {
-        self.hp
-    }
-
-    pub fn realize_atk(&self) -> f64 {
-        self.atk
-    }
-}
-
-#[derive(Clone)]
-struct Hero {
-    hp: Health,
-    atk: Attack,
-    lvl: Level,
-    exp: Experience,
-}
-
-impl Hero {
-    fn new() -> Box<Hero> {
-        Box::new(Hero {
-            hp: 200.0,
-            atk: 20.0,
-            lvl: 1,
-            exp: 0.0,
-        })
-    }
-
-    pub fn show(&self) -> String {
-        format!("{}hp {}atk",
-                self.hp as i32,
-                self.atk as i32)
-    }
-
-    pub fn change_current_hp(&mut self, amount: f64) {
-        self.hp += amount;
-    }
-
-    pub fn realize_hp(&self) -> f64 {
-        self.hp
-    }
-
-    pub fn realize_atk(&self) -> f64 {
-        self.atk
-    }
-
-    pub fn realize_lvl(&self) -> u8 {
-        self.lvl
-    }
-
-    pub fn realize_exp(&self) -> f64 {
-        self.exp
     }
 }
 // ======================================================================
@@ -129,17 +58,16 @@ impl Hero {
 // ======================================================================
 //
 fn main() {
-    let mut game_data: Box<Resources> = Box::new(Resources {
-        player: Hero::new(),
-        enemy: Unit::new(),
-    });
+    let mut game_data: Resources = Resources {
+        player: Hero::new(HERO_INIT_HEALTH, HERO_INIT_ATTACK),
+        enemy: NonHero::new(NONHERO_INIT_HEALTH, NONHERO_INIT_ATTACK),
+    };
     println!("Welcome to {}!", GAME_NAME);
     draw_line_break();
     draw_line_break();
     println!("An enemy appears!");
     battle(&mut game_data);
     battle(&mut game_data);
-    show_mem(&game_data);
 
 
 }
@@ -180,8 +108,8 @@ fn draw_line_break() {
     println!("");
 }
 
-fn battle(in_game_data: &mut Box<Resources>) {
-    let mut game_data: &mut Box<Resources> = in_game_data;
+fn battle(in_game_data: &mut Resources) {
+    let mut game_data: &mut Resources = in_game_data;
     draw_hp_bars(&game_data);
     read_user_input();
     deal_damage(&mut game_data);
@@ -195,7 +123,7 @@ fn read_user_input() {
     println!("{}", user_input);
 }
 
-fn deal_damage(in_game_data: &mut Box<Resources>) {
+fn deal_damage(in_game_data: &mut Resources) {
     let cloned_game_data = in_game_data.clone();
     let ref player = cloned_game_data.player;
     let ref mut enemy = in_game_data.enemy;
