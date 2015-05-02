@@ -68,9 +68,9 @@ fn main() {
         Err(why) => panic!("couldn't read {file}: {reason}",
                            file = database_display,
                            reason = Error::description(&why)),
-        Ok(_) => print!("{file} contains:\n{variable}",
+        Ok(_) => print!("{file} contains:\n{contents}",
                         file = database_display,
-                        variable = database_reader), }
+                        contents = database_reader), }
 
     let mut game_data: Resources = Resources {
         player: Hero::new(HERO_INIT_HEALTH, HERO_INIT_ATTACK),
