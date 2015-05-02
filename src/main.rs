@@ -28,19 +28,14 @@ const NONHERO_INIT_ATTACK: f64 = 10.0;
 #[derive(Clone)]
 pub struct Resources {
     player: Hero,
-    enemy: NonHero,
-}
-
+    enemy: NonHero, }
 impl Resources {
     pub fn realize_player(&self) -> Hero {
         let cloned_self = self.clone();
-        cloned_self.player
-    }
-
+        cloned_self.player }
     pub fn realize_enemy(&self) -> NonHero {
         let cloned_self = self.clone();
-        cloned_self.enemy
-    }
+        cloned_self.enemy }
 }
 // ======================================================================
 
@@ -56,6 +51,7 @@ impl Resources {
 // ======================================================================
 //
 fn main() {
+    // Files ======================================================
     let database_path = Path::new("database.txt");
     let database_display = database_path.display();
     let mut database_file = match File::open(&database_path) {
@@ -71,6 +67,7 @@ fn main() {
         Ok(_) => print!("{file} contains:\n{contents}",
                         file = database_display,
                         contents = database_reader), }
+    // ============================================================
 
     let mut game_data: Resources = Resources {
         player: Hero::new(HERO_INIT_HEALTH, HERO_INIT_ATTACK),
@@ -102,9 +99,7 @@ fn main() {
 // UI
 //
 pub fn draw_line_break() {
-    println!("");
-}
-
+    println!(""); }
 pub fn draw_hp_bars(in_game_data: &Resources) {
     let ref enemy = in_game_data.enemy;
     let ref player = in_game_data.player;
@@ -112,9 +107,7 @@ pub fn draw_hp_bars(in_game_data: &Resources) {
     println!("--------------------");
     println!("enemy: {}", enemy.show());
     println!("player: {}", player.show());
-    println!("--------------------");
-}
-
+    println!("--------------------"); }
 pub fn draw_combat_text(in_game_data: &Resources) {
     let ref enemy = in_game_data.enemy;
     let ref player = in_game_data.player;
@@ -124,8 +117,7 @@ pub fn draw_combat_text(in_game_data: &Resources) {
     let damage: f64 = player.realize_atk();
     print!("{}hp -> ", old_health as i32);
     print!("{}hp ", new_health as i32);
-    println!("{}!", damage as i32);
-}
+    println!("{}!", damage as i32); }
 
 // Memory
 //
@@ -144,8 +136,7 @@ fn show_mem(in_game_data: &Resources) {
     println!("player.hp:  {}", mem::size_of_val(&player.realize_hp()));
     println!("player.atk: {}", mem::size_of_val(&player.realize_atk()));
     println!("player.lvl: {}", mem::size_of_val(&player.realize_lvl()));
-    println!("player.exp: {}", mem::size_of_val(&player.realize_exp()));
-}
+    println!("player.exp: {}", mem::size_of_val(&player.realize_exp())); }
 
 // Misc
 //
@@ -156,20 +147,15 @@ fn battle(in_game_data: &mut Resources) {
     deal_damage(&mut game_data);
     draw_combat_text(&game_data);
     draw_line_break();
-    draw_line_break();
-}
-
+    draw_line_break(); }
 fn read_user_input() {
     let user_input: &str = &"attack";
-    println!("{}", user_input);
-}
-
+    println!("{}", user_input); }
 fn deal_damage(in_game_data: &mut Resources) {
     let cloned_game_data = in_game_data.clone();
     let ref player = cloned_game_data.player;
     let ref mut enemy = in_game_data.enemy;
 
     let dmg = -player.realize_atk();
-    enemy.change_current_hp(dmg);
-}
+    enemy.change_current_hp(dmg); }
 // ======================================================================
